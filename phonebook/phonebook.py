@@ -4,7 +4,7 @@ def work_with_phonebook():
 
     phone_book=read_txt('phonebook.txt')
 
-    while (choice!=10):
+    while (choice!=9):
 
         if choice==1:
             print_result(phone_book)
@@ -22,12 +22,15 @@ def work_with_phonebook():
             lastname=input('lastname ')
             print(delete_by_lastname(phone_book,lastname))
         elif choice==6:
-            number=input('number ')
-            print(find_by_number(phone_book,number))
-        elif choice==7:
-            user_data=input('new data ')
+            print('Новые данные вписывать через запятую: ')
+            user_data=input('Фамилия,Имя,Телефон,Описание: \n')
             add_user(phone_book,user_data)
             write_txt('phonebook.txt',phone_book)
+            phone_book=read_txt('phonebook.txt')
+        elif choice==7:
+            file_name = 'output_file.txt'
+            contact_index = input('Номер строки: ')
+            copy_in_new_file(file_name, contact_index)
 
 
         choice=show_menu()
@@ -37,9 +40,11 @@ def show_menu():
           "1. Отобразить весь справочник\n"
           "2. Найти абонента по фамилии\n"
           "3. Найти абонента по номеру телефона\n"
-          "4. Добавить абонента в справочник\n"
-		  "5. Сохранить справочник в текстовом формате\n"
-          "6. Закончить работу")
+          "4. Изменить номер абонента по фамилии\n"
+          "5. Удалить абонента по фамилии\n"
+		  "6. Добавить новый контакт\n"
+          "7. Вывести контакт в отдельный файл \n"
+          "9. Закончить работу")
     choice = int(input())
     return choice
 
@@ -63,13 +68,18 @@ def write_txt(filename, phone_book):
             for v in phone_book[i].values():
 
                 s = s + v + ','
-
-            phout.write(f'{s[:-1]}\n')
+            if i == len(phone_book)-1:
+                phout.write(f'{s[:-1]}\n')
+            else:
+                phout.write(f'{s[:-1]}')
+    
 
 def print_result(phone_book):
+    print('\t', end='')
     print(*[head for head in phone_book[0].keys()])
-    for contact in phone_book:
-        print(*[string for string in contact.values()], end='')
+    for contact_index in range(len(phone_book)):
+        print(str(contact_index)+'.\t',end='')
+        print(*[string for string in phone_book[contact_index].values()], end='')
     print()
 
 def find_by_lastname(phone_book,last_name):
@@ -86,4 +96,9 @@ def find_by_number(phone_book,number):
             result = [string for string in contact.values()]
     return result
 
+def add_user(phone_book,user_data):
+    fields = [head for head in phone_book[0].keys()]
+    record = dict(zip(fields, user_data.split(',')))
+    phone_book.append(record)
+    
 work_with_phonebook()
