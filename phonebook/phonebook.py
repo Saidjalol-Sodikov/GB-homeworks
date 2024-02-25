@@ -15,9 +15,11 @@ def work_with_phonebook():
             corrent_number=input('Номер: ')
             print(*find_by_number(phone_book,corrent_number))
         elif choice==4:
-            last_name=input('lastname ')
-            new_number=input('new  number ')
-            print(change_number(phone_book,last_name,new_number))
+            last_name=input('Фамилия: ')
+            new_number=input('Новый номер: ')
+            phone_book = change_number(phone_book,last_name,new_number)
+            print(*find_by_lastname(phone_book,last_name))
+            write_txt('phonebook.txt',phone_book)
         elif choice==5:
             lastname=input('lastname ')
             print(delete_by_lastname(phone_book,lastname))
@@ -73,7 +75,6 @@ def write_txt(filename, phone_book):
             else:
                 phout.write(f'{s[:-1]}')
     
-
 def print_result(phone_book):
     print('\t', end='')
     print(*[head for head in phone_book[0].keys()])
@@ -100,5 +101,13 @@ def add_user(phone_book,user_data):
     fields = [head for head in phone_book[0].keys()]
     record = dict(zip(fields, user_data.split(',')))
     phone_book.append(record)
+
+def change_number(phone_book,last_name,new_number):
+    result = list()
+    for contact in phone_book:
+        if contact['Фамилия']==last_name:
+            contact['Телефон'] = new_number
+            result = [string for string in contact.values()]
+    return phone_book
     
 work_with_phonebook()
