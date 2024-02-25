@@ -1,3 +1,5 @@
+import os.path
+
 def work_with_phonebook():
 	
     choice=show_menu()
@@ -33,8 +35,19 @@ def work_with_phonebook():
         elif choice==7:
             file_name = 'output_file.txt'
             contact_index = input('Номер строки: ')
-            copy_in_new_file(file_name, contact_index, phone_book)
-
+            if check_index_in (contact_index, phone_book):
+                copy_in_new_file(file_name, contact_index, phone_book)
+                print(f'Контакт в файле {file_name}')
+            else:
+                print('Вы пытаетесь вывести несуществующий контакт!')    
+        elif choice==8:
+            file_name = input('Название файла: ')
+            contact_index = input('Номер строки: ')
+            if check_index_in (contact_index, phone_book) and os.path.isfile(file_name):
+                copy_in_file(file_name, contact_index, phone_book)
+                print(f'Контакт в файле {file_name}')
+            else:
+                print('Вы пытаетесь вывести несуществующий контакт или файла с таким названием не существует!')
 
         choice=show_menu()
 
@@ -46,7 +59,8 @@ def show_menu():
           "4. Изменить номер абонента по фамилии\n"
           "5. Удалить абонента по фамилии\n"
 		  "6. Добавить новый контакт\n"
-          "7. Вывести контакт в отдельный файл \n"
+          "7. Вывести контакт в новый файл\n"
+          "8. Добавить контакт в имеющийся файл\n"
           "9. Закончить работу")
     is_int = False
     while is_int==False:
@@ -131,6 +145,20 @@ def copy_in_new_file(file_name, contact_index, phone_book):
         for contact_value in phone_book[contact_index].values():
             temp_contact = temp_contact + contact_value + ','
         #print(*temp_contact)
-        out_file.write(f'{temp_contact[:-1]}\n')
+        out_file.write(f'{temp_contact[:-1]}')
 
+def copy_in_file(file_name, contact_index, phone_book):
+    with open(file_name,'a',encoding='utf-8') as out_file:
+        temp_contact=''
+        contact_index = int(contact_index)
+        for contact_value in phone_book[contact_index].values():
+            temp_contact = temp_contact + contact_value + ','
+        #print(*temp_contact)
+        out_file.write(f'{temp_contact[:-1]}')
+        
+def check_index_in (contact_index, phone_book):
+    if int(contact_index)<len(phone_book):
+        return True
+    return False
+        
 work_with_phonebook()
