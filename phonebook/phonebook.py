@@ -121,4 +121,9 @@ def delete_by_lastname(phone_book,last_name):
                 phone_book = phone_book[:contact_index]
             
     return phone_book
+
+def copy_in_new_file(file_name, contact_index):
+    
+    return
+
 work_with_phonebook()
