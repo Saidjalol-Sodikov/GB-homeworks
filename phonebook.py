@@ -33,7 +33,7 @@ def work_with_phonebook():
         elif choice==7:
             file_name = 'output_file.txt'
             contact_index = input('Номер строки: ')
-            copy_in_new_file(file_name, contact_index)
+            copy_in_new_file(file_name, contact_index, phone_book)
 
 
         choice=show_menu()
@@ -48,7 +48,13 @@ def show_menu():
 		  "6. Добавить новый контакт\n"
           "7. Вывести контакт в отдельный файл \n"
           "9. Закончить работу")
-    choice = int(input())
+    is_int = False
+    while is_int==False:
+        try:
+            choice = int(input("Введите число: "))
+            is_int = True
+        except ValueError:
+            print("Некорректный ввод. Попробуйте снова.")
     return choice
 
 def read_txt(filename): 
@@ -61,15 +67,11 @@ def read_txt(filename):
             phone_book.append(record)	
     return phone_book
 
-def write_txt(filename, phone_book):
-
+def write_txt(file_name, phone_book):
     with open('phonebook.txt','w',encoding='utf-8') as phout:
-
         for i in range(len(phone_book)):
-
             s=''
             for v in phone_book[i].values():
-
                 s = s + v + ','
             if i == len(phone_book)-1:
                 phout.write(f'{s[:-1]}\n')
@@ -114,16 +116,21 @@ def change_number(phone_book,last_name,new_number):
 def delete_by_lastname(phone_book,last_name):
     for contact_index in range(len(phone_book)-1):
         if phone_book[contact_index]['Фамилия']==last_name:
-            if contact_index!=len(phone_book):
-                phone_book = phone_book[:contact_index]+phone_book[contact_index+1:]
-                phone_book[-1]['Описание'] = phone_book[-1]['Описание'][:-1]
-            else:
-                phone_book = phone_book[:contact_index]
+            #if contact_index<len(phone_book)-1:
+            phone_book = phone_book[:contact_index]+phone_book[contact_index+1:]
+            phone_book[-1]['Описание'] = phone_book[-1]['Описание'][:-1]
+            # if contact_index>=len(phone_book)-1:
+            #     phone_book = phone_book[:contact_index]
             
     return phone_book
 
-def copy_in_new_file(file_name, contact_index):
-    
-    return
+def copy_in_new_file(file_name, contact_index, phone_book):
+    with open(file_name,'w',encoding='utf-8') as out_file:
+        temp_contact=''
+        contact_index = int(contact_index)
+        for contact_value in phone_book[contact_index].values():
+            temp_contact = temp_contact + contact_value + ','
+        #print(*temp_contact)
+        out_file.write(f'{temp_contact[:-1]}\n')
 
 work_with_phonebook()
