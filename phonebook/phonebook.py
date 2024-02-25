@@ -18,17 +18,18 @@ def work_with_phonebook():
             last_name=input('Фамилия: ')
             new_number=input('Новый номер: ')
             phone_book = change_number(phone_book,last_name,new_number)
-            print(*find_by_lastname(phone_book,last_name))
             write_txt('phonebook.txt',phone_book)
+            print(*find_by_lastname(phone_book,last_name))
         elif choice==5:
-            lastname=input('lastname ')
-            print(delete_by_lastname(phone_book,lastname))
+            last_name=input('Фамилия: ')
+            phone_book = (delete_by_lastname(phone_book,last_name))
+            write_txt('phonebook.txt',phone_book)
+            print('Контакт удалён.')
         elif choice==6:
             print('Новые данные вписывать через запятую: ')
             user_data=input('Фамилия,Имя,Телефон,Описание: \n')
-            add_user(phone_book,user_data)
+            phone_book=add_user(phone_book,user_data)
             write_txt('phonebook.txt',phone_book)
-            phone_book=read_txt('phonebook.txt')
         elif choice==7:
             file_name = 'output_file.txt'
             contact_index = input('Номер строки: ')
@@ -101,13 +102,23 @@ def add_user(phone_book,user_data):
     fields = [head for head in phone_book[0].keys()]
     record = dict(zip(fields, user_data.split(',')))
     phone_book.append(record)
+    return phone_book
 
 def change_number(phone_book,last_name,new_number):
-    result = list()
     for contact in phone_book:
         if contact['Фамилия']==last_name:
             contact['Телефон'] = new_number
             result = [string for string in contact.values()]
     return phone_book
     
+def delete_by_lastname(phone_book,last_name):
+    for contact_index in range(len(phone_book)-1):
+        if phone_book[contact_index]['Фамилия']==last_name:
+            if contact_index!=len(phone_book):
+                phone_book = phone_book[:contact_index]+phone_book[contact_index+1:]
+                phone_book[-1]['Описание'] = phone_book[-1]['Описание'][:-1]
+            else:
+                phone_book = phone_book[:contact_index]
+            
+    return phone_book
 work_with_phonebook()
